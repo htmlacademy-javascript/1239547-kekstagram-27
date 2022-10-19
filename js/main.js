@@ -1,19 +1,17 @@
-const getRandomNumber = (fromNumber, toNumber) => {
-  if (Math.sign(fromNumber) < 0 || Math.sign(toNumber) < 0 || !Number.isInteger(fromNumber) || !Number.isInteger(toNumber)) {
+const getRandomPositiveInt = (from, to) => {
+  const isValid = Math.sign(from) < 0 ||
+                  Math.sign(to) < 0 ||
+                  !Number.isInteger(from) ||
+                  !Number.isInteger(to);
+  if (isValid) {
     return NaN;
   }
-  if(fromNumber > toNumber) {
-    return Math.round(Math.random() * (fromNumber - toNumber) + toNumber);
+  if(from > to) {
+    [from, to] = [to, from];
   }
-  return Math.round(Math.random() * (toNumber - fromNumber) + fromNumber);
+  return Math.round(Math.random() * (to - from) + from);
 };
-getRandomNumber(-6.8, 46);
+getRandomPositiveInt(-6.8, 46);
 
-const isMaxLengthString = (inputString, lengthString) => {
-  if (inputString.length <= lengthString) {
-    return true;
-  } else {
-    return false;
-  }
-};
-isMaxLengthString('Cъешь ещё этих мягких французских булок, да выпей чаю', 90);
+const isMaxLengthLine = (line, maxLength) => line.length <= maxLength;
+isMaxLengthLine('Cъешь ещё этих мягких французских булок, да выпей чаю', 90);
