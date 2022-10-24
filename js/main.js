@@ -1,37 +1,3 @@
-const isMaxLengthLine = (line, maxLength) => line.length <= maxLength;
-isMaxLengthLine('Cъешь ещё этих мягких французских булок, да выпей чаю', 90);
-
-const getRandomPositiveInt = (from, to) => {
-  const isValid = Math.sign(from) < 0 ||
-                  Math.sign(to) < 0 ||
-                  !Number.isInteger(from) ||
-                  !Number.isInteger(to);
-  if (isValid) {
-    return NaN;
-  }
-  if(from > to) {
-    [from, to] = [to, from];
-  }
-  return Math.round(Math.random() * (to - from) + from);
-};
-
-const getArrRandomUniqueInt = (from, to) => {
-  const usedUniqueInt = [];
-  if(from > to) {
-    [from, to] = [to, from];
-  }
-  for(let i = from; i <= to; i++) {
-    let isInclude = true;
-    let elementUnique;
-    while (isInclude) {
-      elementUnique = getRandomPositiveInt(from, to);
-      isInclude = usedUniqueInt.includes(elementUnique);
-    }
-    usedUniqueInt.push(elementUnique);
-  }
-  return usedUniqueInt;
-};
-
 const MESSAGES = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
@@ -59,31 +25,39 @@ const DESCRIPTION = [
   'Здесь могло бы быть описание, но мне лень',
 ];
 
-const ID_UNIQUE_PHOTO = getArrRandomUniqueInt(1,25);
-const ID_UNIQUE_URL_PHOTO = getArrRandomUniqueInt(1,25);
-const ID_UNIQUE_PROFILE_COMMENT = getArrRandomUniqueInt(1000, 1100);
-
-const getUniqueArrayElement = (elements) => {
-  const current = elements[0];
-  elements.shift();
-  return current;
+const getRandomPositiveInt = (from, to) => {
+  const isValid = Math.sign(from) < 0 ||
+                  Math.sign(to) < 0 ||
+                  !Number.isInteger(from) ||
+                  !Number.isInteger(to);
+  if (isValid) {
+    return NaN;
+  }
+  if(from > to) {
+    [from, to] = [to, from];
+  }
+  return Math.round(Math.random() * (to - from) + from);
 };
 
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInt(0, elements.length - 1)];
 
-const createComment = () => ({
-  id: getUniqueArrayElement(ID_UNIQUE_PROFILE_COMMENT),
+const createComment = (id) => ({
+  id: id,
   avatar: `img/avatar-${getRandomPositiveInt(1, 6)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
 
-const createPhoto = () => ({
-  id: getUniqueArrayElement(ID_UNIQUE_PHOTO),
-  url: `photos/${getUniqueArrayElement(ID_UNIQUE_URL_PHOTO)}.jpg`,
+const createComments = () => Array.from({length: getRandomPositiveInt(1,2)}, (_, id) => createComment(id + 1));
+
+const createPhoto = (id) => ({
+  id: id,
+  url: `photos/${id}.jpg`,
   description: getRandomArrayElement(DESCRIPTION),
   likes: getRandomPositiveInt(15, 200),
-  comments: Array.from({length: getRandomPositiveInt(1,2)},createComment),
+  comments: createComments(),
 });
 
-const photos = Array.from({length: 25}, createPhoto);
+const createPhotos = () => Array.from({length: 25}, (_, id) => createPhoto(id + 1));
+
+createPhotos();
