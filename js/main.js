@@ -39,41 +39,16 @@ const getRandomPositiveInt = (from, to) => {
   return Math.round(Math.random() * (to - from) + from);
 };
 
-const getArrRandomUniqueInt = (from, to) => {
-  const usedUniqueInt = [];
-  if(from > to) {
-    [from, to] = [to, from];
-  }
-  for(let i = from; i <= to; i++) {
-    let isInclude = true;
-    let elementUnique;
-    while (isInclude) {
-      elementUnique = getRandomPositiveInt(from, to);
-      isInclude = usedUniqueInt.includes(elementUnique);
-    }
-    usedUniqueInt.push(elementUnique);
-  }
-  return usedUniqueInt;
-};
-
-const getUniqueArrayElement = (elements) => {
-  const current = elements[0];
-  elements.shift();
-  return current;
-};
-
 const getRandomArrayElement = (elements) => elements[getRandomPositiveInt(0, elements.length - 1)];
 
-const idUniqueProfileComment = getArrRandomUniqueInt(1000, 1100);
-
-const createComment = () => ({
-  id: getUniqueArrayElement(idUniqueProfileComment),
+const createComment = (id) => ({
+  id: id,
   avatar: `img/avatar-${getRandomPositiveInt(1, 6)}.svg`,
   message: getRandomArrayElement(MESSAGES),
   name: getRandomArrayElement(NAMES),
 });
 
-const createComments = () => Array.from({length: getRandomPositiveInt(1,2)}, createComment);
+const createComments = () => Array.from({length: getRandomPositiveInt(1,2)}, (_, id) => createComment(id + 1));
 
 const createPhoto = (id) => ({
   id: id,
