@@ -34,7 +34,7 @@ const createComment = (id) => ({
   name: getRandomArrayElement(NAMES),
 });
 
-const createComments = () => Array.from({length: getRandomPositiveInt(1,2)}, (_, id) => createComment(id + 1));
+const createComments = () => Array.from({length: getRandomPositiveInt(4,15)}, (_, id) => createComment(id + 1));
 
 const createPhoto = (id) => ({
   id: id,

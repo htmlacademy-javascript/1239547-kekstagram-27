@@ -1,7 +1,11 @@
+import {isEscapeKey} from './util.js';
+
 const body = document.body;
 const pictureModal = document.querySelector('.big-picture');
 const closeModalButton = pictureModal.querySelector('.big-picture__cancel');
-const allComments = document.querySelector('.social__comments');
+const allComments = pictureModal.querySelector('.social__comments');
+const countComments = pictureModal.querySelector('.social__comment-count');
+const loaderCommentsButton = pictureModal.querySelector('.comments-loader');
 
 const makeElement = (tagName, className, text) => {
   const element = document.createElement(tagName);
@@ -15,6 +19,7 @@ const makeElement = (tagName, className, text) => {
 const closeModal = () => {
   body.classList.remove('modal-open');
   pictureModal.classList.add('hidden');
+  countComments.classList.add('hidden');
 };
 
 const renderComment = ({avatar, message, name}) => {
@@ -34,7 +39,6 @@ const renderComment = ({avatar, message, name}) => {
 };
 
 const renderComments = (comments) => {
-  allComments.innerHTML = '';
   allComments.append(...comments.map(renderComment));
 };
 
@@ -45,22 +49,43 @@ const renderFullPhoto = ({url, likes, comments, description}) => {
   pictureModal.querySelector('.social__caption').textContent = description;
 };
 
+const checkAllComments = (comments) => {
+  let lastComments = [];
+  if (comments.length <= 5) {
+    loaderCommentsButton.classList.add('hidden');
+    renderComments(comments);
+  } else {
+    loaderCommentsButton.classList.remove('hidden');
+    lastComments = comments.slice(5);
+    renderComments(comments.slice(0,5));
+  }
+  return lastComments;
+};
+
 const openModal = ({url, likes, comments, description}) => {
   const info = {url, likes, comments, description};
+  let lastComments = [];
+  allComments.innerHTML = '';
 
   body.classList.add('modal-open');
   pictureModal.classList.remove('hidden');
-  pictureModal.querySelector('.social__comment-count').classList.add('hidden');
-  pictureModal.querySelector('.comments-loader').classList.add('hidden');
+  countComments.classList.add('hidden');
+  loaderCommentsButton.classList.add('hidden');
+  countComments.classList.remove('hidden');
 
   renderFullPhoto(info);
-  renderComments(info.comments);
+
+  lastComments = checkAllComments(info.comments);
+
+  loaderCommentsButton.addEventListener('click', () => {
+    lastComments = checkAllComments(lastComments);
+  });
 
   closeModalButton.addEventListener('click', () => {
     closeModal();
   });
   document.addEventListener('keydown', (evt) => {
-    if (evt.keyCode === 27) {
+    if (isEscapeKey(evt)) {
       closeModal();
     }
   });
