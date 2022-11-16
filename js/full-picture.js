@@ -1,11 +1,15 @@
 import {isEscapeKey} from './util.js';
 
+const MAX_COUNT_COMMETS = 5;
+
 const body = document.body;
 const pictureModal = document.querySelector('.big-picture');
 const closeModalButton = pictureModal.querySelector('.big-picture__cancel');
 const allComments = pictureModal.querySelector('.social__comments');
 const countComments = pictureModal.querySelector('.social__comment-count');
 const loaderCommentsButton = pictureModal.querySelector('.comments-loader');
+
+let onMoreLoaderClick;
 
 const makeElement = (tagName, className, text) => {
   const element = document.createElement(tagName);
@@ -16,11 +20,24 @@ const makeElement = (tagName, className, text) => {
   return element;
 };
 
-const closeModal = () => {
+const onModalEscapeKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    closeModal();
+  }
+};
+
+const onModalCloseButtonClick = () => closeModal();
+
+function closeModal () {
   body.classList.remove('modal-open');
   pictureModal.classList.add('hidden');
   countComments.classList.add('hidden');
-};
+
+  document.removeEventListener('keydown', onModalEscapeKeydown);
+  closeModalButton.removeEventListener('click', onModalCloseButtonClick);
+  loaderCommentsButton.removeEventListener('click', onMoreLoaderClick);
+}
 
 const renderComment = ({avatar, message, name}) => {
   const commentElement = makeElement('li', 'social__comment');
@@ -50,16 +67,15 @@ const renderFullPhoto = ({url, likes, comments, description}) => {
 };
 
 const checkAllComments = (comments) => {
-  let lastComments = [];
-  if (comments.length <= 5) {
+  if (comments.length <= MAX_COUNT_COMMETS) {
     loaderCommentsButton.classList.add('hidden');
     renderComments(comments);
-  } else {
-    loaderCommentsButton.classList.remove('hidden');
-    lastComments = comments.slice(5);
-    renderComments(comments.slice(0,5));
+    return [];
   }
-  return lastComments;
+
+  loaderCommentsButton.classList.remove('hidden');
+  renderComments(comments.slice(0, MAX_COUNT_COMMETS));
+  return comments.slice(MAX_COUNT_COMMETS);
 };
 
 const openModal = ({url, likes, comments, description}) => {
@@ -77,18 +93,12 @@ const openModal = ({url, likes, comments, description}) => {
 
   lastComments = checkAllComments(info.comments);
 
-  loaderCommentsButton.addEventListener('click', () => {
+  loaderCommentsButton.addEventListener('click', onMoreLoaderClick = () => {
     lastComments = checkAllComments(lastComments);
   });
 
-  closeModalButton.addEventListener('click', () => {
-    closeModal();
-  });
-  document.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
-      closeModal();
-    }
-  });
+  closeModalButton.addEventListener('click', onModalCloseButtonClick);
+  document.addEventListener('keydown', onModalEscapeKeydown);
 };
 
 export {openModal};
