@@ -1,4 +1,6 @@
-const HASHTAG = /^#[a-zа-яё0-9]{1,19}/i;
+import {isEscapeKey} from './util.js';
+
+const HASHTAG = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const body = document.body;
 const uploadForm = document.querySelector('#upload-select-image');
@@ -21,16 +23,11 @@ const hashtagsMatch = (value) => {
 };
 
 const validateHashtags = (value) => {
-  const hashtags = value.trim().split(' ');
+  const hashtags = value.trim().split(/\s+/);
   return hashtags.every(validateHashtag) && hashtags.length <= 5 && hashtagsMatch(hashtags).length === 0;
 };
 
-pristine.addValidator(hashtag, validateHashtags, 'Длина до 20 символов, используются буквы и цифры, до 5 хэштегов');
-
 const validateComment = (value) => value.length <= 140;
-
-pristine.addValidator(comment, validateComment, 'Максимальная длина 140 символов');
-
 
 const closeModal = () => {
   body.classList.remove('modal-open');
@@ -47,7 +44,7 @@ const openModal = () => {
   });
 
   document.addEventListener('keydown', (evt) => {
-    if (evt.keyCode === 27 && document.activeElement !== comment && document.activeElement !== hashtag) {
+    if (isEscapeKey(evt) && document.activeElement !== comment && document.activeElement !== hashtag) {
       closeModal();
       uploadForm.reset();
     }
@@ -55,16 +52,19 @@ const openModal = () => {
 };
 
 const uploadPhoto = () => {
-  openModal(uploadModal, closeModalButton);
+  openModal();
 
   uploadForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
     if (isValid) {
       uploadForm.reset();
-      closeModal(uploadModal);
+      closeModal();
     }
   });
 };
+
+pristine.addValidator(hashtag, validateHashtags, 'Длина до 20 символов, используются буквы и цифры, до 5 хэштегов');
+pristine.addValidator(comment, validateComment, 'Максимальная длина 140 символов');
 
 export {uploadPhoto};
