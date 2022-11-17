@@ -1,4 +1,7 @@
 import {isEscapeKey} from './util.js';
+import {loadPictureScaleControl} from './scale.js';
+
+import {loadPictureEffectsControl} from './effect.js';
 
 const HASHTAG = /^#[a-zа-яё0-9]{1,19}$/i;
 
@@ -37,6 +40,9 @@ const closeModal = () => {
 const openModal = () => {
   body.classList.add('modal-open');
   uploadModal.classList.remove('hidden');
+
+  loadPictureScaleControl();
+  loadPictureEffectsControl();
 
   closeModalButton.addEventListener('click', () => {
     closeModal();
