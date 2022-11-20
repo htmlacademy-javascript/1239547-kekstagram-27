@@ -1,8 +1,15 @@
-import {createPhotos} from './data.js';
+import {showAlert} from './util.js';
 import {renderPhotos} from './picture.js';
-import {uploadPhoto} from './form.js';
+import {uploadPhoto, closeFormModal} from './form.js';
+import {getData} from './api.js';
 
-const photos = createPhotos();
-renderPhotos(photos);
+getData(
+  (photos) => {
+    renderPhotos(photos);
+  },
+  () => {
+    showAlert('Не удалось получить данные с сервера. Попробуйте обновить страницу');
+  }
+);
 
-uploadPhoto();
+uploadPhoto(closeFormModal);

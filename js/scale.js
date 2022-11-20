@@ -31,11 +31,15 @@ const onScaleBiggerControl = () => {
   }
 };
 
-const loadPictureScaleControl = () => {
+const cleanScale = () => {
   setScaleNewValue(SCALE_DEFAULT);
+};
+
+const loadPictureScaleControl = () => {
+  cleanScale();
 
   scaleSmaller.addEventListener('click', onScaleSmallerControl);
   scaleBigger.addEventListener('click', onScaleBiggerControl);
 };
 
-export {loadPictureScaleControl};
+export {loadPictureScaleControl, cleanScale};

@@ -43,11 +43,12 @@ const EFFECTS_PARAMS = {
   },
 };
 
+const DEFAULT_EFFECT = 'none';
+
 const allEffects = document.querySelectorAll('.effects__radio');
 const picturePreview = document.querySelector('.img-upload__preview img');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelValue = document.querySelector('.effect-level__value');
-
 
 const createSlider = () => {
   noUiSlider.create(effectLevelSlider, {
@@ -98,7 +99,7 @@ const updateSlider = (effect) => {
 
 const setEffectValue = (effect) => {
   const currentValue = effectLevelSlider.noUiSlider.get();
-  if (effect !== 'none') {
+  if (effect !== DEFAULT_EFFECT) {
     picturePreview.style.filter = `${EFFECTS_PARAMS[effect].effect}(${currentValue}${EFFECTS_PARAMS[effect].unit})`;
   } else {
     picturePreview.style.filter = '';
@@ -115,12 +116,11 @@ const changeEffect = () => {
   allEffects.forEach((effect) => {
     effect.addEventListener('change', (evt) => {
       const nameSelectedEffect = evt.target.value;
-      picturePreview.classList = '';
-      picturePreview.classList.add(`effects__preview--${nameSelectedEffect}`);
+      picturePreview.classList.value = `effects__preview effects__preview--${nameSelectedEffect}`;
 
       showSlider(effect);
 
-      if(nameSelectedEffect === 'none') {
+      if(nameSelectedEffect === DEFAULT_EFFECT) {
         hideSlider(effect);
       }
 
@@ -134,10 +134,18 @@ const changeEffect = () => {
   });
 };
 
+const cleanEffect = () => {
+  if(effectLevelSlider.noUiSlider) {
+    effectLevelSlider.noUiSlider.destroy();
+  }
+  picturePreview.style.filter = '';
+  effectLevelValue.value = DEFAULT_EFFECT;
+};
+
 const loadPictureEffectsControl = () => {
   createSlider();
   changeEffect();
   hideSlider(allEffects.item(0));
 };
 
-export {loadPictureEffectsControl};
+export {loadPictureEffectsControl, cleanEffect};
