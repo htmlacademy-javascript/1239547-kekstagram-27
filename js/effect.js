@@ -116,7 +116,7 @@ const changeEffect = () => {
   allEffects.forEach((effect) => {
     effect.addEventListener('change', (evt) => {
       const nameSelectedEffect = evt.target.value;
-      picturePreview.classList.value = `effects__preview effects__preview--${nameSelectedEffect}`;
+      picturePreview.classList.value = `effects__preview--${nameSelectedEffect}`;
 
       showSlider(effect);
 
