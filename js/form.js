@@ -3,6 +3,8 @@ import {loadPictureScaleControl, cleanScale} from './scale.js';
 import {loadPictureEffectsControl, cleanEffect} from './effect.js';
 import {sendData} from './api.js';
 
+import {checkTypeMessage, openMessage} from './message.js';
+
 const HASHTAG = /^#[a-zа-яё0-9]{1,19}$/i;
 const SUCCESS_TYPE_MESSAGE = 'success';
 const ERROR_TYPE_MESSAGE = 'error';
@@ -15,8 +17,6 @@ const closeFormModalButton = uploadModal.querySelector('#upload-cancel');
 const hashtag = uploadForm.querySelector('.text__hashtags');
 const comment = uploadForm.querySelector('.text__description');
 const submitButton = uploadForm.querySelector('.img-upload__submit');
-const successMessageTemplate = document.querySelector('#success').content.querySelector('.success');
-const errorMessageTemplate = document.querySelector('#error').content.querySelector('.error');
 
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
@@ -37,14 +37,6 @@ const validateHashtags = (value) => {
 };
 
 const validateComment = (value) => value.length <= 140;
-
-const checkTypeMessage = () => {
-  const typeMessageElement = document.querySelector('.success') || document.querySelector('.error');
-  if(!typeMessageElement) {
-    return;
-  }
-  return typeMessageElement.classList.value === 'success' ? 'success' : 'error';
-};
 
 const closeFormModal = () => {
   body.classList.remove('modal-open');
@@ -85,42 +77,7 @@ const unblockSubmitButton = () => {
   submitButton.disabled = false;
 };
 
-const closeMessage = () => {
-  const typeMessage = checkTypeMessage();
-  document.querySelector(`.${typeMessage}`).remove();
-};
-
-const onMessageEscapeKeydown = (evt) => {
-  if (isEscapeKey(evt) && checkTypeMessage()) {
-    evt.preventDefault();
-    document.removeEventListener('keydown', onMessageEscapeKeydown);
-    closeMessage();
-  }
-};
-
-const onOutsideMessage = (evt) => {
-  const typeMessage = checkTypeMessage();
-
-  if (evt.target.closest(`.${typeMessage}`)) {
-    document.removeEventListener('click', onOutsideMessage);
-    closeMessage();
-  }
-};
-
-const openMessage = (typeMessage) => {
-  const message = typeMessage === 'success' ? successMessageTemplate.cloneNode(true) : errorMessageTemplate.cloneNode(true);
-  const messageButton = message.querySelector(`.${typeMessage}__button`);
-  document.body.append(message);
-
-  messageButton.addEventListener('click', () => {
-    closeMessage();
-  });
-
-  document.addEventListener('keydown', onMessageEscapeKeydown);
-  document.addEventListener('click', onOutsideMessage);
-};
-
-const uploadPhoto = (onSuccess) => {
+const uploadPhoto = () => {
 
   filePhoto.addEventListener('change', () => {
     openFormModal();
@@ -133,7 +90,7 @@ const uploadPhoto = (onSuccess) => {
       blockSubmitButton();
       sendData(
         () => {
-          onSuccess();
+          closeFormModal();
           unblockSubmitButton();
           openMessage(SUCCESS_TYPE_MESSAGE);
         },

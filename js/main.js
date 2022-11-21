@@ -1,15 +1,18 @@
-import {showAlert} from './util.js';
+import {showAlert, debounce} from './util.js';
 import {renderPhotos} from './picture.js';
-import {uploadPhoto, closeFormModal} from './form.js';
+import {uploadPhoto} from './form.js';
 import {getData} from './api.js';
+import {showFilter, changeFilter} from './filter.js';
 
-getData(
-  (photos) => {
-    renderPhotos(photos);
-  },
-  () => {
-    showAlert('Не удалось получить данные с сервера. Попробуйте обновить страницу');
-  }
-);
+const RERENDER_DELAY = 500;
 
-uploadPhoto(closeFormModal);
+getData((photos) => {
+  renderPhotos(photos);
+  showFilter();
+  changeFilter(debounce(
+    () => renderPhotos(photos),
+    RERENDER_DELAY,
+  ));
+}, showAlert);
+
+uploadPhoto();
