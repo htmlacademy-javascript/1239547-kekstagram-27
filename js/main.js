@@ -6,10 +6,9 @@ import {showFilter, changeFilter} from './filter.js';
 
 const RERENDER_DELAY = 500;
 
-showFilter();
-
 getData((photos) => {
   renderPhotos(photos);
+  showFilter();
   changeFilter(debounce(
     () => renderPhotos(photos),
     RERENDER_DELAY,
