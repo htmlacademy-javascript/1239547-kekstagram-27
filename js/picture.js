@@ -10,24 +10,9 @@ const pictureTemplate = document.querySelector('#picture').content.querySelector
 const filter = document.querySelector('.img-filters');
 let activeFilterButton = filter.querySelector(`.${ACTIVE_FILTER}`).id;
 
-const comparePhotos = (photoFirst, photoSecond) => {
-  activeFilterButton = filter.querySelector(`.${ACTIVE_FILTER}`).id;
+const sortByMostDiscussied = (photos) => photos.sort((photoFirst, photoSecond) => photoSecond.comments.length - photoFirst.comments.length);
 
-  if (activeFilterButton === DISCUSSED_FILTER) {
-    return photoSecond.comments.length - photoFirst.comments.length;
-  }
-  return 0;
-};
-
-const filterPhotos = (elem, index, elems) =>{
-  activeFilterButton = filter.querySelector(`.${ACTIVE_FILTER}`).id;
-
-  if (activeFilterButton === RANDOM_FILTER && elems.indexOf(elem) === index) {
-    return 1;
-  }
-  return 0;
-};
-
+const filterRandom = (photos) => photos.sort(() => Math.random() - Math.random()).slice(0, COUNT_RANDOM_PHOTOS);
 
 const renderPhoto = ({url, likes, comments, description}) => {
   const pictureElement = pictureTemplate.cloneNode(true);
@@ -48,9 +33,9 @@ const renderPhotos = (photos) => {
   let newPhotos = photos.slice();
 
   if (activeFilterButton === RANDOM_FILTER) {
-    newPhotos = photos.filter(filterPhotos).slice(0, COUNT_RANDOM_PHOTOS);
-  } else {
-    newPhotos.sort(comparePhotos);
+    newPhotos = filterRandom(newPhotos);
+  } else if (activeFilterButton === DISCUSSED_FILTER) {
+    newPhotos = sortByMostDiscussied(newPhotos);
   }
 
   allPhotos.forEach((element) => element.remove());
