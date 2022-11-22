@@ -2,10 +2,9 @@ import {isEscapeKey} from './util.js';
 import {loadPictureScaleControl, cleanScale} from './scale.js';
 import {loadPictureEffectsControl, cleanEffect} from './effect.js';
 import {sendData} from './api.js';
-
 import {checkTypeMessage, openMessage} from './message.js';
 
-const HASHTAG = /^#[a-zа-яё0-9]{1,19}$/i;
+const HASHTAG = /^(#[a-zа-яё0-9]{1,19}){0,20}$/i;
 const SUCCESS_TYPE_MESSAGE = 'success';
 const ERROR_TYPE_MESSAGE = 'error';
 

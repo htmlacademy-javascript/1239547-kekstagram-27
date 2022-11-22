@@ -24,7 +24,7 @@ const onMessageEscapeKeydown = (evt) => {
 const onOutsideMessage = (evt) => {
   const messageElement = checkTypeMessage();
 
-  if (messageElement.contains(evt.target)) {
+  if (messageElement && messageElement.contains(evt.target)) {
     document.removeEventListener('click', onOutsideMessage);
     closeMessage();
   }

@@ -1,21 +1,5 @@
 const ALERT_SHOW_TIME = 8000;
 
-const getRandomPositiveInt = (from, to) => {
-  const isValid = Math.sign(from) < 0 ||
-                  Math.sign(to) < 0 ||
-                  !Number.isInteger(from) ||
-                  !Number.isInteger(to);
-  if (isValid) {
-    return NaN;
-  }
-  if(from > to) {
-    [from, to] = [to, from];
-  }
-  return Math.round(Math.random() * (to - from) + from);
-};
-
-const getRandomArrayElement = (elements) => elements[getRandomPositiveInt(0, elements.length - 1)];
-
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const showAlert = (message) => {
@@ -50,4 +34,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export {getRandomPositiveInt, getRandomArrayElement, isEscapeKey, showAlert, debounce};
+export {isEscapeKey, showAlert, debounce};
