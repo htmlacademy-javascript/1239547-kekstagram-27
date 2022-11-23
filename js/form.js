@@ -9,15 +9,15 @@ const SUCCESS_TYPE_MESSAGE = 'success';
 const ERROR_TYPE_MESSAGE = 'error';
 
 const body = document.body;
-const uploadForm = document.querySelector('#upload-select-image');
-const uploadModal = document.querySelector('.img-upload__overlay');
-const filePhoto = uploadForm.querySelector('#upload-file');
-const closeFormModalButton = uploadModal.querySelector('#upload-cancel');
-const hashtag = uploadForm.querySelector('.text__hashtags');
-const comment = uploadForm.querySelector('.text__description');
-const submitButton = uploadForm.querySelector('.img-upload__submit');
+const uploadFormElement = document.querySelector('#upload-select-image');
+const uploadModalElement = document.querySelector('.img-upload__overlay');
+const filePhotoElement = uploadFormElement.querySelector('#upload-file');
+const closeFormModalButtonElement = uploadModalElement.querySelector('#upload-cancel');
+const hashtagElement = uploadFormElement.querySelector('.text__hashtags');
+const commentElement = uploadFormElement.querySelector('.text__description');
+const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
 
-const pristine = new Pristine(uploadForm, {
+const pristine = new Pristine(uploadFormElement, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper-error',
@@ -25,64 +25,63 @@ const pristine = new Pristine(uploadForm, {
 
 const validateHashtag = (value) => HASHTAG.test(value);
 
-const hashtagsMatch = (value) => {
+const matchHashtags = (value) => {
   const lowerHashtags = value.map((elem) => elem.toLowerCase());
   return lowerHashtags.filter((elem, index, elems) => elems.indexOf(elem) !== index);
 };
 
 const validateHashtags = (value) => {
   const hashtags = value.trim().split(/\s+/);
-  return hashtags.every(validateHashtag) && hashtags.length <= 5 && hashtagsMatch(hashtags).length === 0;
+  return hashtags.every(validateHashtag) && hashtags.length <= 5 && matchHashtags(hashtags).length === 0;
 };
 
 const validateComment = (value) => value.length <= 140;
 
 const closeFormModal = () => {
   body.classList.remove('modal-open');
-  uploadModal.classList.add('hidden');
-  uploadForm.reset();
+  uploadModalElement.classList.add('hidden');
+  uploadFormElement.reset();
   cleanScale();
   cleanEffect();
 };
 
 const onModalEscapeKeydown = (evt) => {
-  if (isEscapeKey(evt) && document.activeElement !== comment && document.activeElement !== hashtag && !checkTypeMessage()) {
+  if (isEscapeKey(evt) && document.activeElement !== commentElement && document.activeElement !== hashtagElement && !checkTypeMessage()) {
     closeFormModal();
-    uploadForm.reset();
+    uploadFormElement.reset();
     document.removeEventListener('keydown', onModalEscapeKeydown);
   }
 };
 
 const openFormModal = () => {
   body.classList.add('modal-open');
-  uploadModal.classList.remove('hidden');
+  uploadModalElement.classList.remove('hidden');
 
   loadPictureScaleControl();
   loadPictureEffectsControl();
 
-  closeFormModalButton.addEventListener('click', () => {
+  closeFormModalButtonElement.addEventListener('click', () => {
     closeFormModal();
-    uploadForm.reset();
+    uploadFormElement.reset();
   });
 
   document.addEventListener('keydown', onModalEscapeKeydown);
 };
 
 const blockSubmitButton = () => {
-  submitButton.disabled = true;
+  submitButtonElement.disabled = true;
 };
 
 const unblockSubmitButton = () => {
-  submitButton.disabled = false;
+  submitButtonElement.disabled = false;
 };
 
 const uploadPhoto = () => {
-
-  filePhoto.addEventListener('change', () => {
+  filePhotoElement.addEventListener('change', () => {
     openFormModal();
   });
 
-  uploadForm.addEventListener('submit', (evt) => {
+  uploadFormElement.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
     if (isValid) {
@@ -103,7 +102,7 @@ const uploadPhoto = () => {
   });
 };
 
-pristine.addValidator(hashtag, validateHashtags, 'Длина до 20 символов, используются буквы и цифры, до 5 хэштегов');
-pristine.addValidator(comment, validateComment, 'Максимальная длина 140 символов');
+pristine.addValidator(hashtagElement, validateHashtags, 'Длина до 20 символов, используются буквы и цифры, до 5 хэштегов');
+pristine.addValidator(commentElement, validateComment, 'Максимальная длина 140 символов');
 
 export {uploadPhoto, closeFormModal};

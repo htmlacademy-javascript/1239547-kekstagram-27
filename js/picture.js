@@ -5,10 +5,10 @@ const DISCUSSED_FILTER = 'filter-discussed';
 const ACTIVE_FILTER = 'img-filters__button--active';
 const COUNT_RANDOM_PHOTOS = 10;
 
-const pictures = document.querySelector('.pictures');
+const picturesElement = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-const filter = document.querySelector('.img-filters');
-let activeFilterButton = filter.querySelector(`.${ACTIVE_FILTER}`).id;
+const filterElement = document.querySelector('.img-filters');
+let activeFilterButtonElement = filterElement.querySelector(`.${ACTIVE_FILTER}`).id;
 
 const sortByMostDiscussied = (photos) => photos.sort((photoFirst, photoSecond) => photoSecond.comments.length - photoFirst.comments.length);
 
@@ -28,19 +28,19 @@ const renderPhoto = ({url, likes, comments, description}) => {
 };
 
 const renderPhotos = (photos) => {
-  activeFilterButton = filter.querySelector(`.${ACTIVE_FILTER}`).id;
-  const allPhotos = pictures.querySelectorAll('.picture');
+  activeFilterButtonElement = filterElement.querySelector(`.${ACTIVE_FILTER}`).id;
+  const allPhotos = picturesElement.querySelectorAll('.picture');
   let newPhotos = photos.slice();
 
-  if (activeFilterButton === RANDOM_FILTER) {
+  if (activeFilterButtonElement === RANDOM_FILTER) {
     newPhotos = filterRandom(newPhotos);
-  } else if (activeFilterButton === DISCUSSED_FILTER) {
+  } else if (activeFilterButtonElement === DISCUSSED_FILTER) {
     newPhotos = sortByMostDiscussied(newPhotos);
   }
 
   allPhotos.forEach((element) => element.remove());
 
-  pictures.append(...newPhotos.map(renderPhoto));
+  picturesElement.append(...newPhotos.map(renderPhoto));
 };
 
 export {renderPhotos};

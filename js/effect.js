@@ -45,13 +45,13 @@ const EFFECTS_PARAMS = {
 
 const DEFAULT_EFFECT = 'none';
 
-const allEffects = document.querySelectorAll('.effects__radio');
-const picturePreview = document.querySelector('.img-upload__preview img');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const effectLevelValue = document.querySelector('.effect-level__value');
+const allEffectsElement = document.querySelectorAll('.effects__radio');
+const picturePreviewElement = document.querySelector('.img-upload__preview img');
+const effectLevelSliderElement = document.querySelector('.effect-level__slider');
+const effectLevelValueElement = document.querySelector('.effect-level__value');
 
 const createSlider = () => {
-  noUiSlider.create(effectLevelSlider, {
+  noUiSlider.create(effectLevelSliderElement, {
     range: {
       min: EFFECTS_PARAMS.none.min,
       max: EFFECTS_PARAMS.none.max,
@@ -74,20 +74,20 @@ const createSlider = () => {
 };
 
 const hideSlider = (element) => {
-  effectLevelSlider.classList.add('hidden');
+  effectLevelSliderElement.classList.add('hidden');
   element.value = 'none';
 };
 
 const showSlider = () => {
-  effectLevelSlider.classList.remove('hidden');
+  effectLevelSliderElement.classList.remove('hidden');
 };
 
 const updateSlider = (effect) => {
-  effectLevelSlider.noUiSlider.on('update', () => {
-    effectLevelValue.value = effectLevelSlider.noUiSlider.get();
+  effectLevelSliderElement.noUiSlider.on('update', () => {
+    effectLevelValueElement.value = effectLevelSliderElement.noUiSlider.get();
   });
 
-  effectLevelSlider.noUiSlider.updateOptions({
+  effectLevelSliderElement.noUiSlider.updateOptions({
     range: {
       min: EFFECTS_PARAMS[effect].min,
       max: EFFECTS_PARAMS[effect].max,
@@ -98,25 +98,22 @@ const updateSlider = (effect) => {
 };
 
 const setEffectValue = (effect) => {
-  const currentValue = effectLevelSlider.noUiSlider.get();
-  if (effect !== DEFAULT_EFFECT) {
-    picturePreview.style.filter = `${EFFECTS_PARAMS[effect].effect}(${currentValue}${EFFECTS_PARAMS[effect].unit})`;
-  } else {
-    picturePreview.style.filter = '';
-  }
+  const currentValue = effectLevelSliderElement.noUiSlider.get();
+
+  picturePreviewElement.style.filter = effect !== DEFAULT_EFFECT ? `${EFFECTS_PARAMS[effect].effect}(${currentValue}${EFFECTS_PARAMS[effect].unit})` : '';
 };
 
 const updateEffect = (effect) => {
-  effectLevelSlider.noUiSlider.on('update', () => {
+  effectLevelSliderElement.noUiSlider.on('update', () => {
     setEffectValue(effect);
   });
 };
 
 const changeEffect = () => {
-  allEffects.forEach((effect) => {
+  allEffectsElement.forEach((effect) => {
     effect.addEventListener('change', (evt) => {
       const nameSelectedEffect = evt.target.value;
-      picturePreview.classList.value = `effects__preview--${nameSelectedEffect}`;
+      picturePreviewElement.classList.value = `effects__preview--${nameSelectedEffect}`;
 
       showSlider(effect);
 
@@ -135,17 +132,18 @@ const changeEffect = () => {
 };
 
 const cleanEffect = () => {
-  if(effectLevelSlider.noUiSlider) {
-    effectLevelSlider.noUiSlider.destroy();
+  if(effectLevelSliderElement.noUiSlider) {
+    effectLevelSliderElement.noUiSlider.destroy();
   }
-  picturePreview.style.filter = '';
-  effectLevelValue.value = DEFAULT_EFFECT;
+  picturePreviewElement.style.filter = '';
+  picturePreviewElement.classList.value = `effects__preview--${DEFAULT_EFFECT}`;
+  effectLevelValueElement.value = DEFAULT_EFFECT;
 };
 
 const loadPictureEffectsControl = () => {
   createSlider();
   changeEffect();
-  hideSlider(allEffects.item(0));
+  hideSlider(allEffectsElement.item(0));
 };
 
 export {loadPictureEffectsControl, cleanEffect};
