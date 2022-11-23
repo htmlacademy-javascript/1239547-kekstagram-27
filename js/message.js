@@ -32,10 +32,10 @@ const onOutsideMessage = (evt) => {
 
 const openMessage = (typeMessage) => {
   const message = typeMessage === 'success' ? successMessageTemplate.cloneNode(true) : errorMessageTemplate.cloneNode(true);
-  const messageButton = message.querySelector(`.${typeMessage}__button`);
+  const messageButtonElement = message.querySelector(`.${typeMessage}__button`);
   document.body.append(message);
 
-  messageButton.addEventListener('click', () => {
+  messageButtonElement.addEventListener('click', () => {
     closeMessage();
   });
 
